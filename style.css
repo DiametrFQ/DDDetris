@@ -5,6 +5,7 @@
 
 body {
     overflow: hidden;
+    touch-action: none;
 }
 
 #threejs {

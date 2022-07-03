@@ -29,26 +29,15 @@
 
     </div>
 
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.139.0/build/three.module.js",
-                "OrbitControls": "https://unpkg.com/three@0.139.0/examples/jsm/controls/OrbitControls.js",
-                "GLTFLoader": "https://unpkg.com/three@0.139.0/examples/jsm/loaders/GLTFLoader.js",
-                "RectAreaLightHelper": "https://unpkg.com/three@0.139.0/examples/jsm/helpers/RectAreaLightHelper.js",
-                "RectAreaLightUniformsLib": "https://unpkg.com/three@0.139.0/examples/jsm/lights/RectAreaLightUniformsLib.js"
-            }
-        }
-    </script>
-
     <script type="module">
 
-        import * as THREE from 'three';
-        import { OrbitControls } from 'OrbitControls';
-        import { GLTFLoader } from 'GLTFLoader';
-        import { RectAreaLightHelper } from 'RectAreaLightHelper'
-        import { RectAreaLightUniformsLib } from 'RectAreaLightUniformsLib';
-        import Stats from './three.js-master/examples/jsm/libs/stats.module.js';
+        import * as THREE from './exaples/three.module.js';
+        import { OrbitControls } from './exaples/OrbitControls.js';
+
+        import { GLTFLoader } from './exaples/GLTFLoader.js';
+        import { RectAreaLightHelper } from './exaples/RectAreaLightHelper.js'
+        import { RectAreaLightUniformsLib } from './exaples/RectAreaLightUniformsLib.js';
+        import Stats from './exaples/stats.module.js';
         
         function init() {
 
