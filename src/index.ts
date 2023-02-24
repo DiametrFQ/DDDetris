@@ -42,18 +42,17 @@ const ternCube2 = (parentCrdnt1 :number, parentCrdnt2 :number, childCrdnt1 :numb
 
 document.onkeydown = event => {
 
-    // const X = camera.position.x
-    // const Z = camera.position.z
+    const X = camera.position.x
+    const Z = camera.position.z
 
-    // ///Conditions for determining the position of the camera relative to the initial position
-    // ///the initial position is considered to be the "front" position
-    // ///the "back" position is considered to be the position in which the camera is behind the initial position etc.
+    ///Conditions for determining the position of the camera relative to the initial position
+    ///the initial position is considered to be the "front" position
+    ///the "back" position is considered to be the position in which the camera is behind the initial position etc.
 
-    // const back = (Z < 0 && Z * -1 > Math.abs(X))
-    // const right = (X > 0 && X > Math.abs(Z))
-    // const left = (X < 0 && X * -1 > Math.abs(Z))
-
-    // //const front = (Z > 0 && Z > Math.abs(X) )
+    const back = (Z < 1000 && Z > Math.abs(X))
+    const right = (X > 1000 && X > Math.abs(Z))
+    const left = (X < 1000 && X > Math.abs(Z))
+    //const front = (Z > 1000 && Z > Math.abs(X) )
 
     const checkEk = (directionKeys: string[]) => directionKeys.includes(event.key);
 
@@ -63,13 +62,7 @@ document.onkeydown = event => {
         // right? activeFigureNow.moveLeft(usedCubes) : 
         // left?  activeFigureNow.moveRight(usedCubes) : 
 
-        // activeFigureNow.moveFront(usedCubes);
-        if(!detectMeshCollision("z", activeCubes, passiveCubes)){
-            for (const cubeChild of activeCubes) 
-            {
-                cubeChild.position.z -= 100
-            }
-        }
+        activeFigure.moveFront(passiveCubes)
     }
     else if (checkEk(['ArrowDown',])) 
     {
@@ -77,13 +70,8 @@ document.onkeydown = event => {
         // right? activeFigureNow.moveRight(usedCubes) : 
         // left?  activeFigureNow.moveLeft(usedCubes) :
 
-        // activeFigureNow.moveBack(usedCubes);
-        if(!detectMeshCollision("z", activeCubes, passiveCubes)){
-            for (const cubeChild of activeCubes) 
-            {
-                cubeChild.position.z += 100
-            }
-        }
+
+        activeFigure.moveBack(passiveCubes)
     }
     else if (checkEk(['ArrowRight',]))
     {
@@ -91,13 +79,7 @@ document.onkeydown = event => {
         // right? activeFigureNow.moveFront(usedCubes) : 
         // left?  activeFigureNow.moveBack(usedCubes) :
 
-        // activeFigureNow.moveRight(usedCubes);
-        if(!detectMeshCollision("x", activeCubes, passiveCubes)){
-            for (const cubeChild of activeCubes) 
-            {
-                cubeChild.position.x += 100
-            }
-        }
+        activeFigure.moveRight(passiveCubes)
     }
 
     else if (checkEk(['ArrowLeft',]))
@@ -106,13 +88,7 @@ document.onkeydown = event => {
         // right? activeFigureNow.moveBack(usedCubes) : 
         // left? activeFigureNow.moveFront(usedCubes) :
 
-        // activeFigureNow.moveLeft(usedCubes);
-        if(!detectMeshCollision("x", activeCubes, passiveCubes)){
-            for (const cubeChild of activeCubes) 
-            {
-                cubeChild.position.x -= 100
-            }
-        }
+        activeFigure.moveLeft(passiveCubes)
     }
 
     if (checkEk(['W', 'w', 'ц', 'Ц', ])) 
@@ -125,16 +101,20 @@ document.onkeydown = event => {
     }
     else if (checkEk(['A', 'a', 'ф', 'Ф', ])) 
     {
-        activeFigure.turnLeft(passiveCubes, platform)
+        activeFigure.leanLeft(passiveCubes, platform)
     }
     else if (checkEk(['D', 'd', 'в', 'В', ])) 
     { 
+        activeFigure.leanRight(passiveCubes, platform)
+    }
+    else if (checkEk(['Q', 'q', 'й', 'Й']))
+    {
+        activeFigure.turnLeft(passiveCubes, platform)
+    }
+    else if (checkEk(['E', 'e', 'у', 'У']))
+    {
         activeFigure.turnRight(passiveCubes, platform)
     }
-
-    
-    else if (checkEk(['Q', 'q', 'й', 'Й'])) {}
-    else if (checkEk(['E', 'e', 'у', 'У'])) {}
 
 
     if (checkEk([' ',]))
