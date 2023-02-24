@@ -125,11 +125,131 @@ abstract class Afigure //implements Ifigure
         return false;
     }
 
-}
+    protected determineOccupancy = (activeCubes :THREE.Mesh[], passiveCubes :THREE.Mesh[], platform :Cplatform) => 
+    {
+        
+        for (const activeCube of activeCubes) 
+        {
+            if(activeCube.position.y < platform.position[1])
+            {
+                return true
+            }
+            for (const passiveCube of passiveCubes) 
+            {
+                if(
+                    activeCube.position.x === passiveCube.position.x &&
+                    activeCube.position.y === passiveCube.position.y &&
+                    activeCube.position.z === passiveCube.position.z
+                ){
+                    return true
+                }
+            }
+        }
+        return false
+    }
 
+    leanForward = (passiveCubes: THREE.Mesh[], platform :Cplatform) => 
+    {
+        for (const cubes of this.mesh) 
+        {
+            [cubes.position.z, cubes.position.y] = ternCube
+            (
+                this.mesh[0].position.z, this.mesh[0].position.y, 
+                cubes.position.z, cubes.position.y
+            ); 
+        }
+        if(this.determineOccupancy(this.mesh, passiveCubes, platform))
+        {
+            this.leanBack(passiveCubes, platform)
+        } 
+    }
+
+    leanBack = (passiveCubes: THREE.Mesh[], platform :Cplatform) => 
+    {
+        for (const cubes of this.mesh) 
+        {
+            [cubes.position.y, cubes.position.z] = ternCube
+            (
+                this.mesh[0].position.y, this.mesh[0].position.z, 
+                cubes.position.y, cubes.position.z
+            );   
+        }
+
+        if(this.determineOccupancy(this.mesh, passiveCubes, platform))
+        {
+            this.leanForward(passiveCubes, platform)
+        }
+    }
+
+    leanLeft = (passiveCubes: THREE.Mesh[], platform :Cplatform) => 
+    {
+        for (const cubes of this.mesh) 
+        {
+            [cubes.position.y, cubes.position.x] = ternCube
+            (
+                this.mesh[0].position.y, this.mesh[0].position.x, 
+                cubes.position.y, cubes.position.x
+            ); 
+        }
+        if(this.determineOccupancy(this.mesh, passiveCubes, platform))
+        {
+            this.leanRight(passiveCubes, platform)
+        } 
+    }
+
+    leanRight = (passiveCubes: THREE.Mesh[], platform :Cplatform) => 
+    {
+        for (const cubes of this.mesh) 
+        {
+            [cubes.position.x, cubes.position.y] = ternCube
+            (
+                this.mesh[0].position.x, this.mesh[0].position.y, 
+                cubes.position.x, cubes.position.y
+            );  
+        }
+
+        if(this.determineOccupancy(this.mesh, passiveCubes, platform))
+        {
+            this.leanLeft(passiveCubes, platform)
+        }
+    }
+
+    turnLeft = (passiveCubes: THREE.Mesh[], platform :Cplatform) => 
+    {
+        for (const cubes of this.mesh) 
+        {
+            [cubes.position.z, cubes.position.x] = ternCube
+            (
+                this.mesh[0].position.z, this.mesh[0].position.x, 
+                cubes.position.z, cubes.position.x
+            ); 
+        }
+        if(this.determineOccupancy(this.mesh, passiveCubes, platform))
+        {
+            this.turnRight(passiveCubes, platform)
+        } 
+    }
+
+    turnRight = (passiveCubes: THREE.Mesh[], platform :Cplatform) => 
+    {
+        for (const cubes of this.mesh) 
+        {
+            [cubes.position.x, cubes.position.z] = ternCube
+            (
+                this.mesh[0].position.x, this.mesh[0].position.z, 
+                cubes.position.x, cubes.position.z
+            );  
+        }
+
+        if(this.determineOccupancy(this.mesh, passiveCubes, platform))
+        {
+            this.turnLeft(passiveCubes, platform)
+        }
+    }
+}
 export default Afigure;
 
-const ternCube2 = (parentCrdnt1 :number, parentCrdnt2 :number, childCrdnt1 :number, childCrdnt2 :number) :[number, number] => 
+const ternCube = (parentCrdnt1 :number, parentCrdnt2 :number, childCrdnt1 :number, childCrdnt2 :number) :[number, number] => 
 {
     const newCrdnt1 = childCrdnt1 + ((parentCrdnt1 - childCrdnt1) + (parentCrdnt2 - childCrdnt2));
     const newCrdnt2 = childCrdnt2 - ((parentCrdnt1 - childCrdnt1) - (parentCrdnt2 - childCrdnt2));
@@ -137,17 +257,9 @@ const ternCube2 = (parentCrdnt1 :number, parentCrdnt2 :number, childCrdnt1 :numb
     return [newCrdnt1, newCrdnt2]
 }
 
+
 const turnCube = (cubeChild :THREE.Mesh, cubeParent :THREE.Mesh) => 
 {
-
-    const parentX = cubeParent.position.x;
-    const parentY = cubeParent.position.y;
-    const parentZ = cubeParent.position.z;
-
-
-    const childX = cubeChild.position.x;
-    const childY = cubeChild.position.y;
-    const childZ = cubeChild.position.z;
 
     // //в право по Y
     // const newChildX = childX + ((parentX - childX) + (parentY - childY));
@@ -164,23 +276,4 @@ const turnCube = (cubeChild :THREE.Mesh, cubeParent :THREE.Mesh) =>
     // //в лево по Z
     //const newChildZ = childZ + ((parentZ - childZ) + (parentX - childX));
     //const newChildX = childX - ((parentZ - childZ) - (parentX - childX));
-
-    // //вверх
-    //const newChildZ = childZ + ((parentZ - childZ) + (parentY - childY));
-    //const newChildY = childY - ((parentZ - childZ) - (parentY - childY));
-    [cubeChild.position.z, cubeChild.position.y] = ternCube2
-    (
-        cubeParent.position.z, cubeParent.position.y, 
-        cubeChild.position.z, cubeChild.position.y
-    );
-    // //вниз
-    //const newChildY = childY + ((parentY - childY) + (parentZ - childZ));
-    //const newChildZ = childZ - ((parentY - childY) - (parentZ - childZ));
-
-    //cubeChild.position.x = newChildX;
-    //[cubeChild.position.y, cubeChild.position.z] = ternCube2(parentY, parentZ, childY, childZ);
-    //[cubeChild.position.z, cubeChild.position.y] = ternCube2(parentZ, parentY, childZ, childY);
-
-    //cubeChild.position.y = newChildY
-    //cubeChild.position.z = newChildZ
 }

@@ -19,13 +19,13 @@ class CT extends Afigure
             ))
 
 
-            this.mesh.push(this.createChildren(
-                [
-                    -100 + this.mesh[0].position.x, 
-                    0 + this.mesh[0].position.y,
-                    0 + this.mesh[0].position.z
-                ]
-            ))
+            // this.mesh.push(this.createChildren(
+            //     [
+            //         -100 + this.mesh[0].position.x, 
+            //         0 + this.mesh[0].position.y,
+            //         0 + this.mesh[0].position.z
+            //     ]
+            // ))
 
             this.mesh.push(this.createChildren(
                 [
@@ -35,21 +35,21 @@ class CT extends Afigure
                 ]
             ))
 
-            this.mesh.push(this.createChildren(
-                [
-                    0 + this.mesh[0].position.x,
-                    0 + this.mesh[0].position.y,
-                    100 + this.mesh[0].position.z
-                ]
-            ))
+            // this.mesh.push(this.createChildren(
+            //     [
+            //         0 + this.mesh[0].position.x,
+            //         0 + this.mesh[0].position.y,
+            //         100 + this.mesh[0].position.z
+            //     ]
+            // ))
 
-            this.mesh.push(this.createChildren(
-                [
-                    0 + this.mesh[0].position.x,
-                    100 + this.mesh[0].position.y,
-                    0 + this.mesh[0].position.z
-                ]
-            ))
+            // this.mesh.push(this.createChildren(
+            //     [
+            //         0 + this.mesh[0].position.x,
+            //         100 + this.mesh[0].position.y,
+            //         0 + this.mesh[0].position.z
+            //     ]
+            // ))
 
         }
 

@@ -9,6 +9,7 @@ import CT from './figures/CT';
 import Clight from './light/Clight';
 // import getRandom from './gameScripts/getRandom';
 import onWindowResize from './gameScripts/onWindowResize';
+import Afigure from './Interfaces/AFigure';
 // import Afigure from './Interfaces/AFigure';
 
 const ternCube2 = (parentCrdnt1 :number, parentCrdnt2 :number, childCrdnt1 :number, childCrdnt2 :number) :[number, number] => 
@@ -19,53 +20,25 @@ const ternCube2 = (parentCrdnt1 :number, parentCrdnt2 :number, childCrdnt1 :numb
     return [newCrdnt1, newCrdnt2]
 }
 
-const turnCube = (cubeChild :THREE.Mesh, cubeParent :THREE.Mesh) => 
-{
+// const turnCube = (cubeChild :THREE.Mesh, cubeParent :THREE.Mesh) => 
+// {
 
-    const parentX = cubeParent.position.x;
-    const parentY = cubeParent.position.y;
-    const parentZ = cubeParent.position.z;
+//     // //в право по Y
+//     // const newChildX = childX + ((parentX - childX) + (parentY - childY));
+//     // const newChildY = childY - ((parentX - childX) - (parentY - childY));
 
+//     // //в право по Y
+//     // const newChildY = childY + ((parentY - childY) + (parentX - childX));
+//     // const newChildX = childX - ((parentY - childY) - (parentX - childX));
 
-    const childX = cubeChild.position.x;
-    const childY = cubeChild.position.y;
-    const childZ = cubeChild.position.z;
+//     // //в право по Z
+//     // const newChildX = childX + ((parentX - childX) + (parentZ - childZ));
+//     // const newChildZ = childZ - ((parentX - childX) - (parentZ - childZ));
 
-    // //в право по Y
-    // const newChildX = childX + ((parentX - childX) + (parentY - childY));
-    // const newChildY = childY - ((parentX - childX) - (parentY - childY));
-
-    // //в право по Y
-    // const newChildY = childY + ((parentY - childY) + (parentX - childX));
-    // const newChildX = childX - ((parentY - childY) - (parentX - childX));
-
-    // //в право по Z
-    // const newChildX = childX + ((parentX - childX) + (parentZ - childZ));
-    // const newChildZ = childZ - ((parentX - childX) - (parentZ - childZ));
-
-    // //в лево по Z
-    //const newChildZ = childZ + ((parentZ - childZ) + (parentX - childX));
-    //const newChildX = childX - ((parentZ - childZ) - (parentX - childX));
-
-    // //вверх
-    //const newChildZ = childZ + ((parentZ - childZ) + (parentY - childY));
-    //const newChildY = childY - ((parentZ - childZ) - (parentY - childY));
-    [cubeChild.position.z, cubeChild.position.y] = ternCube2
-    (
-        cubeParent.position.z, cubeParent.position.y, 
-        cubeChild.position.z, cubeChild.position.y
-    );
-    // //вниз
-    //const newChildY = childY + ((parentY - childY) + (parentZ - childZ));
-    //const newChildZ = childZ - ((parentY - childY) - (parentZ - childZ));
-
-    //cubeChild.position.x = newChildX;
-    //[cubeChild.position.y, cubeChild.position.z] = ternCube2(parentY, parentZ, childY, childZ);
-    //[cubeChild.position.z, cubeChild.position.y] = ternCube2(parentZ, parentY, childZ, childY);
-
-    //cubeChild.position.y = newChildY
-    //cubeChild.position.z = newChildZ
-}
+//     // //в лево по Z
+//     //const newChildZ = childZ + ((parentZ - childZ) + (parentX - childX));
+//     //const newChildX = childX - ((parentZ - childZ) - (parentX - childX));
+// }
 
 document.onkeydown = event => {
 
@@ -144,34 +117,24 @@ document.onkeydown = event => {
 
     if (checkEk(['W', 'w', 'ц', 'Ц', ])) 
     {
-        const movedCubes :THREE.Mesh[] = []
-
-        for (const cubeChild of activeCubes) 
-        {
-            movedCubes.push(cubeChild)
-
-            turnCube(cubeChild, activeCubes[0])
-
-            if(determineOccupancy(activeCubes, passiveCubes))
-            {
-                for (const movedCube of movedCubes) 
-                {
-                    turnCube(movedCube, activeCubes[0])
-                    turnCube(movedCube, activeCubes[0])
-                    turnCube(movedCube, activeCubes[0])
-                }
-                movedCubes.length = 0
-                break
-            }
-        }
+        activeFigure.leanForward(passiveCubes, platform)
     }
-//         else if (checkEk(['S', 's', 'ы', 'Ы', ])) { }
-//         else if (checkEk(['A', 'a', 'ф', 'Ф', ])) { }
+    else if (checkEk(['S', 's', 'ы', 'Ы', ])) 
+    {
+        activeFigure.leanBack(passiveCubes, platform)
+    }
+    else if (checkEk(['A', 'a', 'ф', 'Ф', ])) 
+    {
+        activeFigure.turnLeft(passiveCubes, platform)
+    }
+    else if (checkEk(['D', 'd', 'в', 'В', ])) 
+    { 
+        activeFigure.turnRight(passiveCubes, platform)
+    }
 
-//         else if (checkEk(['D', 'd', 'в', 'В', ])) { }
     
-//         else if (checkEk(['Q', 'q', 'й', 'Й'])) {}
-//         else if (checkEk(['E', 'e', 'у', 'У'])) {}
+    else if (checkEk(['Q', 'q', 'й', 'Й'])) {}
+    else if (checkEk(['E', 'e', 'у', 'У'])) {}
 
 
     if (checkEk([' ',]))
@@ -209,28 +172,6 @@ const detectMeshCollision = (xyz :string, activeCubes :THREE.Mesh[], passiveCube
     }
     return false;
 }
-const determineOccupancy = (activeCubes :THREE.Mesh[], passiveCubes :THREE.Mesh[]) => 
-{
-    
-    for (const activeCube of activeCubes) 
-    {
-        if(activeCube.position.y < platform.position[1])
-        {
-            return true
-        }
-        for (const passiveCube of passiveCubes) 
-        {
-            if(
-                activeCube.position.x === passiveCube.position.x &&
-                activeCube.position.y === passiveCube.position.y &&
-                activeCube.position.z === passiveCube.position.z
-            ){
-                return true
-            }
-        }
-    }
-    return false
-}
 
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -259,6 +200,7 @@ scene.add(...light.createWithHelpers(platform.Mesh));
 
 const passiveCubes: THREE.Mesh[] = []
 const activeCubes: THREE.Mesh[] = []
+let activeFigure: Afigure
 
 const getRandomArbitrary = (min: number, max: number) => 
 {
@@ -273,11 +215,11 @@ const spawn = () =>
     const colors = [0x00ff00, 0x000000, 0xff0000, 0x0000ff, 0xff00ff, 0xb14bff, ];
     let color = colors[getRandomArbitrary(0, colors.length)];
 
-    let cubes = new CT(color, [1000,1450,1000]);
+    activeFigure = new CT(color, [1000,1450,1000]);
 
-    cubes.create()
+    activeFigure.create()
 
-    for (const cube of cubes.mesh) 
+    for (const cube of activeFigure.mesh) 
     {
         scene.add(cube);
         activeCubes.push(cube);
