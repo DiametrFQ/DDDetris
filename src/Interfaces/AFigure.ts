@@ -6,9 +6,9 @@ import Cplatform from '../figures/Cplatform';
 abstract class Afigure //implements Ifigure
 {
     //Mesh: THREE.Mesh;
-    geometryFigure: [number, number, number] = [90, 90, 90];
+    geometryFigure: [number, number, number] = [100, 100, 100];
     position: [number, number, number];
-    mesh: THREE.Mesh;
+    mesh: THREE.Mesh[] = [];
     border: number = 600;
 
     protected color: number;
@@ -23,68 +23,74 @@ abstract class Afigure //implements Ifigure
 
     moveDown = (passiveCubes: THREE.Mesh[], platform: Cplatform) =>
     {
-        if(!platform.checkCollision(this.mesh)){
-            return true
-        }
-        if(!this.checkCollisionDown(passiveCubes, platform))
-        {
-            this.mesh.position.y -= 100
-            return false;
+        for (const meshCube of this.mesh) {
+            if(!platform.checkCollision(meshCube)){
+                return true
+            }
+            if(!this.checkCollisionDown(meshCube, passiveCubes, platform))
+            {
+                meshCube.position.y -= 100
+                return false;
+            }
         }
         return true;
     }
 
-    checkCollisionDown = (passiveCubes: THREE.Mesh[], platform: Cplatform): boolean => 
+    checkCollisionDown = (mesh :THREE.Mesh, passiveCubes: THREE.Mesh[], platform: Cplatform): boolean => 
     {
-        this.mesh.position.y -= 100
-        // for(let i = 0; i < 800000000; i++)
-        // {
-            
-        // }
+        mesh.position.y -= 100
         const downCollision = this.detectMeshCollision(passiveCubes)
-        this.mesh.position.y += 100
-
+        mesh.position.y += 100
+    
         return downCollision
     }
 
-    checkCollisionForMove = (passiveCubes: THREE.Mesh[], zx: string, factor: number) => 
-    {
-        if(zx === 'z')
-        {
-            this.mesh.position.z += 100 * factor
-            if(this.detectMeshCollision(passiveCubes))
-            {
-                this.mesh.position.z -= 100 * factor
-                return;
-            }
-        }
-        if(zx === 'x')
-        {
-            this.mesh.position.x += 100 * factor
-            if(this.detectMeshCollision(passiveCubes))
-            {
-                this.mesh.position.x -= 100 * factor
-                return;
-            }
-        }
-    }
+    // checkCollisionForMove = (passiveCubes: THREE.Mesh[], zx: string, factor: number) => 
+    // {
+    //     if(zx === 'z')
+    //     {
+    //         this.mesh.position.z += 100 * factor
+    //         if(this.detectMeshCollision(passiveCubes))
+    //         {
+    //             this.mesh.position.z -= 100 * factor
+    //             return;
+    //         }
+    //     }
+    //     if(zx === 'x')
+    //     {
+    //         this.mesh.position.x += 100 * factor
+    //         if(this.detectMeshCollision(passiveCubes))
+    //         {
+    //             this.mesh.position.x -= 100 * factor
+    //             return;
+    //         }
+    //     }
+    // }
 
-    moveFront = (usedCubes: THREE.Mesh[]) => 
-    {
-        this.checkCollisionForMove(usedCubes, 'z', -1)
-    }
-    moveLeft = (usedCubes: THREE.Mesh[]) => 
-    {
-        this.checkCollisionForMove(usedCubes, 'x', -1)
-    }
-    moveRight = (usedCubes: THREE.Mesh[]) => 
-    {
-        this.checkCollisionForMove(usedCubes, 'x', 1)
-    }
-    moveBack = (usedCubes: THREE.Mesh[]) => 
-    {
-        this.checkCollisionForMove(usedCubes, 'z', 1)
-    }
+    // moveFront = (usedCubes: THREE.Mesh[]) => 
+    // {
+    //     this.checkCollisionForMove(usedCubes, 'z', -1)
+    // }
+    // moveLeft = (usedCubes: THREE.Mesh[]) => 
+    // {
+    //     this.checkCollisionForMove(usedCubes, 'x', -1)
+    // }
+    // moveRight = (usedCubes: THREE.Mesh[]) => 
+    // {
+    //     this.checkCollisionForMove(usedCubes, 'x', 1)
+    // }
+    // moveBack = (usedCubes: THREE.Mesh[]) => 
+    // {
+    //     this.checkCollisionForMove(usedCubes, 'z', 1)
+    // }
+
+    // tiltRight = () => {
+    //     [cubeChild.position.z, cubeChild.position.y] = ternCube2
+    //     (
+    //         cubeParent.position.z, this.activeCubes[0].position.y, 
+    //         cubeChild.position.z, activeCubes[0].position.y
+    //     );
+    // }
 
     //move(turningSide: string, positionCamera: THREE.Vector3): void;
 
@@ -102,59 +108,79 @@ abstract class Afigure //implements Ifigure
 
     detectMeshCollision = (passiveCubes: THREE.Mesh[]): boolean =>
     {
-        for (const pCube of passiveCubes) 
-        {
-            const box1 = new THREE.Box3().setFromObject(this.mesh, true);
-            const box2 = new THREE.Box3().setFromObject(pCube, true);
-
-            if(box1.intersectsBox(box2))
+        for (const meshCube of this.mesh) {
+            
+        
+            for (const pCube of passiveCubes) 
             {
-                return true
+                const box1 = new THREE.Box3().setFromObject(meshCube, true);
+                const box2 = new THREE.Box3().setFromObject(pCube, true);
+
+                if(box1.intersectsBox(box2))
+                {
+                    return true
+                }
             }
         }
         return false;
     }
 
 }
+
 export default Afigure;
 
-// const turnCube = bool => {
-//     let minX = null, maxX = null
-//     let minZ = null, maxZ = null
-//     let minY = null, maxY = null
+const ternCube2 = (parentCrdnt1 :number, parentCrdnt2 :number, childCrdnt1 :number, childCrdnt2 :number) :[number, number] => 
+{
+    const newCrdnt1 = childCrdnt1 + ((parentCrdnt1 - childCrdnt1) + (parentCrdnt2 - childCrdnt2));
+    const newCrdnt2 = childCrdnt2 - ((parentCrdnt1 - childCrdnt1) - (parentCrdnt2 - childCrdnt2));
 
-//     for (let i = 1; i < amount + 1; i++) {
+    return [newCrdnt1, newCrdnt2]
+}
 
-//         if (minX > cubes[cubes.length - i].position.x || minX === null) minX = cubes[cubes.length - i].position.x
-//         if (minZ > cubes[cubes.length - i].position.z || minZ === null) minZ = cubes[cubes.length - i].position.z
-//         if (minY > cubes[cubes.length - i].position.y || minY === null) minY = cubes[cubes.length - i].position.y
+const turnCube = (cubeChild :THREE.Mesh, cubeParent :THREE.Mesh) => 
+{
 
-//         if (maxX < cubes[cubes.length - i].position.x || maxX === null) maxX = cubes[cubes.length - i].position.x
-//         if (maxZ < cubes[cubes.length - i].position.z || maxZ === null) maxZ = cubes[cubes.length - i].position.z
-//         if (maxY < cubes[cubes.length - i].position.y || maxY === null) maxY = cubes[cubes.length - i].position.y
+    const parentX = cubeParent.position.x;
+    const parentY = cubeParent.position.y;
+    const parentZ = cubeParent.position.z;
 
-//     }
-//     let X = (maxX + minX) / 2, Y = (maxY + minY) / 2, Z = (maxZ + minZ) / 2
 
-//     if (camera.position.z > 0 && camera.position.z > Math.abs(camera.position.x)) {
-//         if (answer(-1 * bool, "x", X, Y, Z)) {
-//             turn(-1 * bool, "x", X, Y, Z)
-//         }
-//     }
-//     if (camera.position.z < 0 && camera.position.z * -1 > Math.abs(camera.position.x)) {
-//         if (answer(bool, "x", X, Y, Z)) {
-//             turn(bool, "x", X, Y, Z)
-//         }
-//     }
-//     if (camera.position.x > 0 && camera.position.x > Math.abs(camera.position.z)) {
-//         if (answer(bool, "z", X, Y, Z)) {
-//             turn(bool, "z", X, Y, Z)
-//         }
-//     }
-//     if (camera.position.x < 0 && camera.position.x * -1 > Math.abs(camera.position.z)) {
-//         if (answer(-1 * bool, "z", X, Y, Z)) {
-//             turn(-1 * bool, "z", X, Y, Z)
-//         }
-//     }
+    const childX = cubeChild.position.x;
+    const childY = cubeChild.position.y;
+    const childZ = cubeChild.position.z;
 
-// }
+    // //в право по Y
+    // const newChildX = childX + ((parentX - childX) + (parentY - childY));
+    // const newChildY = childY - ((parentX - childX) - (parentY - childY));
+
+    // //в право по Y
+    // const newChildY = childY + ((parentY - childY) + (parentX - childX));
+    // const newChildX = childX - ((parentY - childY) - (parentX - childX));
+
+    // //в право по Z
+    // const newChildX = childX + ((parentX - childX) + (parentZ - childZ));
+    // const newChildZ = childZ - ((parentX - childX) - (parentZ - childZ));
+
+    // //в лево по Z
+    //const newChildZ = childZ + ((parentZ - childZ) + (parentX - childX));
+    //const newChildX = childX - ((parentZ - childZ) - (parentX - childX));
+
+    // //вверх
+    //const newChildZ = childZ + ((parentZ - childZ) + (parentY - childY));
+    //const newChildY = childY - ((parentZ - childZ) - (parentY - childY));
+    [cubeChild.position.z, cubeChild.position.y] = ternCube2
+    (
+        cubeParent.position.z, cubeParent.position.y, 
+        cubeChild.position.z, cubeChild.position.y
+    );
+    // //вниз
+    //const newChildY = childY + ((parentY - childY) + (parentZ - childZ));
+    //const newChildZ = childZ - ((parentY - childY) - (parentZ - childZ));
+
+    //cubeChild.position.x = newChildX;
+    //[cubeChild.position.y, cubeChild.position.z] = ternCube2(parentY, parentZ, childY, childZ);
+    //[cubeChild.position.z, cubeChild.position.y] = ternCube2(parentZ, parentY, childZ, childY);
+
+    //cubeChild.position.y = newChildY
+    //cubeChild.position.z = newChildZ
+}

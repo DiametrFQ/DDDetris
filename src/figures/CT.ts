@@ -3,49 +3,59 @@ import Afigure from '../Interfaces/AFigure';
 
 class CT extends Afigure
 {
-    // getChildrenBodys(): CANNON.Body[]
-    // {
-    //     return this.cubeBodys;
-    // }
-
     create(): THREE.Mesh[]
     {
-        // this.mesh = new THREE.Mesh
-        // (
-        //     new THREE.BoxGeometry(...geometry), 
-        //     new THREE.MeshStandardMaterial({ color: this.color,  depthWrite: false, transparent: true, opacity: 2})
-        // );
-        // this.mesh.position.set(...this.position);
-        // this.mesh.receiveShadow = true;
-        // this.mesh.castShadow = true;
-
-        this.mesh = this.createChildren(this.geometryFigure)
+        this.mesh.push(this.createChildren(this.geometryFigure))
+        this.mesh[0].position.set(...this.position);
 
 
-
-        //for (let i = 1; i < 2; i++) 
         {
-            this.mesh.add(this.createChildren([100, 0,0]))
-            this.mesh.add(this.createChildren([200, 0,0]))
+            this.mesh.push(this.createChildren(
+                [
+                    100 + this.mesh[0].position.x,
+                    0 + this.mesh[0].position.y,
+                    0 + this.mesh[0].position.z
+                ]
+            ))
 
 
-            this.mesh.add(this.createChildren([-100, 0,0]))
-            this.mesh.add(this.createChildren([-200, 0,0]))
+            this.mesh.push(this.createChildren(
+                [
+                    -100 + this.mesh[0].position.x, 
+                    0 + this.mesh[0].position.y,
+                    0 + this.mesh[0].position.z
+                ]
+            ))
 
-            this.mesh.add(this.createChildren([0, 0, 100]))
-            this.mesh.add(this.createChildren([0, 0, 200]))
+            this.mesh.push(this.createChildren(
+                [
+                    0 + this.mesh[0].position.x,
+                    0 + this.mesh[0].position.y,
+                    100 + this.mesh[0].position.z
+                ]
+            ))
 
-            this.mesh.add(this.createChildren([0, 0, -100]))
-            this.mesh.add(this.createChildren([0, 0, -200]))
+            this.mesh.push(this.createChildren(
+                [
+                    0 + this.mesh[0].position.x,
+                    0 + this.mesh[0].position.y,
+                    100 + this.mesh[0].position.z
+                ]
+            ))
 
-            this.mesh.add(this.createChildren([0, 100,0]))
+            this.mesh.push(this.createChildren(
+                [
+                    0 + this.mesh[0].position.x,
+                    100 + this.mesh[0].position.y,
+                    0 + this.mesh[0].position.z
+                ]
+            ))
 
         }
-        this.mesh.position.set(...this.position);
 
-        //console.log(this.parentCube.children[0].position)
-        return [this.mesh]
+        return this.mesh
     }
+
 
     private createChildren(position: [number, number, number]): THREE.Mesh
     {
@@ -61,6 +71,7 @@ class CT extends Afigure
 
         return cubeMesh;
     }
+
     // turnFront(): void 
     // {
     //     // if(this.cubes[1].position.z > this.cubes[0].position.z){

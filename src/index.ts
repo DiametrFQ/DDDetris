@@ -4,14 +4,23 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import Cplatform from './figures/Cplatform';
 // import Cborder from './figures/Cborder';
 // import Ccube from './figures/Ccube';
-// import CT from './figures/CT';
+import CT from './figures/CT';
 // // import Ifigure from './Interfaces/Ifigure';
 import Clight from './light/Clight';
 // import getRandom from './gameScripts/getRandom';
 import onWindowResize from './gameScripts/onWindowResize';
 // import Afigure from './Interfaces/AFigure';
 
-const turnCube = (cubeChild :THREE.Mesh, cubeParent :THREE.Mesh) => {
+const ternCube2 = (parentCrdnt1 :number, parentCrdnt2 :number, childCrdnt1 :number, childCrdnt2 :number) :[number, number] => 
+{
+    const newCrdnt1 = childCrdnt1 + ((parentCrdnt1 - childCrdnt1) + (parentCrdnt2 - childCrdnt2));
+    const newCrdnt2 = childCrdnt2 - ((parentCrdnt1 - childCrdnt1) - (parentCrdnt2 - childCrdnt2));
+
+    return [newCrdnt1, newCrdnt2]
+}
+
+const turnCube = (cubeChild :THREE.Mesh, cubeParent :THREE.Mesh) => 
+{
 
     const parentX = cubeParent.position.x;
     const parentY = cubeParent.position.y;
@@ -39,17 +48,23 @@ const turnCube = (cubeChild :THREE.Mesh, cubeParent :THREE.Mesh) => {
     //const newChildX = childX - ((parentZ - childZ) - (parentX - childX));
 
     // //вверх
-    const newChildZ = childZ + ((parentZ - childZ) + (parentY - childY));
-    const newChildY = childY - ((parentZ - childZ) - (parentY - childY));
-
+    //const newChildZ = childZ + ((parentZ - childZ) + (parentY - childY));
+    //const newChildY = childY - ((parentZ - childZ) - (parentY - childY));
+    [cubeChild.position.z, cubeChild.position.y] = ternCube2
+    (
+        cubeParent.position.z, cubeParent.position.y, 
+        cubeChild.position.z, cubeChild.position.y
+    );
     // //вниз
     //const newChildY = childY + ((parentY - childY) + (parentZ - childZ));
     //const newChildZ = childZ - ((parentY - childY) - (parentZ - childZ));
 
     //cubeChild.position.x = newChildX;
-    cubeChild.position.y = newChildY ;
-    cubeChild.position.z = newChildZ;
+    //[cubeChild.position.y, cubeChild.position.z] = ternCube2(parentY, parentZ, childY, childZ);
+    //[cubeChild.position.z, cubeChild.position.y] = ternCube2(parentZ, parentY, childZ, childY);
 
+    //cubeChild.position.y = newChildY
+    //cubeChild.position.z = newChildZ
 }
 
 document.onkeydown = event => {
@@ -242,29 +257,8 @@ scene.add(platform.create());
 const light = new Clight(0xffffff, [1000, 3000, 1000], 10, 3000);
 scene.add(...light.createWithHelpers(platform.Mesh));
 
-
 const passiveCubes: THREE.Mesh[] = []
 const activeCubes: THREE.Mesh[] = []
-
-const createCube = (position :[number, number, number], color? :number) => 
-{
-    const cube = new THREE.Mesh
-    (
-        new THREE.BoxGeometry(100, 100, 100), 
-        new THREE.MeshPhongMaterial({ color: color })
-    );
-    cube.position.set(...position);
-    cube.receiveShadow = true;
-    cube.castShadow = true;
-    scene.add(cube);
-    activeCubes.push(cube);
-    return cube;
-}
-
-createCube([1000, 1450, 1000]);
-createCube([1000, 1350, 1000]);
-createCube([900, 1450, 1000]);
-createCube([1100, 1450, 1000]);
 
 const getRandomArbitrary = (min: number, max: number) => 
 {
@@ -276,16 +270,20 @@ const getRandomArbitrary = (min: number, max: number) =>
 
 const spawn = () =>
 {
-    const colors = [0x00ff00, 0x000000, 0xff0000, 0x0000ff, 0xff00ff, 0xb14bff, ]
-    let color = colors[getRandomArbitrary(0, colors.length)]
+    const colors = [0x00ff00, 0x000000, 0xff0000, 0x0000ff, 0xff00ff, 0xb14bff, ];
+    let color = colors[getRandomArbitrary(0, colors.length)];
 
-    createCube([1000, 1450, 1000]);
-    createCube([1000, 1350, 1000]);
-    createCube([900, 1450, 1000]);
-    createCube([1100, 1450, 1000]);
-    createCube([1200, 1450, 1000]);
+    let cubes = new CT(color, [1000,1450,1000]);
+
+    cubes.create()
+
+    for (const cube of cubes.mesh) 
+    {
+        scene.add(cube);
+        activeCubes.push(cube);
+    }
 }
-
+spawn();
 setInterval(() => 
 {
     if(
