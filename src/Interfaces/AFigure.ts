@@ -1,11 +1,8 @@
 import * as THREE from 'three';
-//import Ifigure from '../Interfaces/Ifigure';
 import Cplatform from '../figures/Cplatform';
 
-// This class does not implement an interface because each shape needs to have its own create() and move() methods.
-abstract class Afigure //implements Ifigure
+abstract class Afigure 
 {
-    //Mesh: THREE.Mesh;
     protected geometryFigure: [number, number, number] = [100, 100, 100];
     protected position: [number, number, number];
     protected color: number;
@@ -31,7 +28,6 @@ abstract class Afigure //implements Ifigure
 
         return [newCrdnt1, newCrdnt2]
     }
-
     private checkCollisionDown = (mesh :THREE.Mesh, passiveCubes: THREE.Mesh[], platform: Cplatform): boolean => 
     {
         mesh.position.y -= 100
@@ -59,10 +55,8 @@ abstract class Afigure //implements Ifigure
         }
         return false;
     }
-    
     private determineOccupancy = (activeCubes :THREE.Mesh[], passiveCubes :THREE.Mesh[], platform :Cplatform) => 
-    {
-        
+    { 
         for (const activeCube of activeCubes) 
         {
             if(activeCube.position.y < platform.position[1])
@@ -108,7 +102,6 @@ abstract class Afigure //implements Ifigure
                 cubeChild.position.z += 100
             }
         }
-        //this.checkCollisionForMove(usedCubes, 'z', -1)
     }
     moveRight = (passiveCubes: THREE.Mesh[]) => 
     {
@@ -149,6 +142,21 @@ abstract class Afigure //implements Ifigure
             }
         }
     }
+    lean = (passiveCubes: THREE.Mesh[], platform :Cplatform) => 
+    {
+        for (const cubes of this.mesh) 
+        {
+            [cubes.position.z, cubes.position.y] = this.ternCube
+            (
+                this.mesh[0].position.z, this.mesh[0].position.y, 
+                cubes.position.z, cubes.position.y
+            ); 
+        }
+        if(this.determineOccupancy(this.mesh, passiveCubes, platform))
+        {
+            this.leanBack(passiveCubes, platform)
+        } 
+    }
     leanForward = (passiveCubes: THREE.Mesh[], platform :Cplatform) => 
     {
         for (const cubes of this.mesh) 
@@ -164,7 +172,6 @@ abstract class Afigure //implements Ifigure
             this.leanBack(passiveCubes, platform)
         } 
     }
-
     leanBack = (passiveCubes: THREE.Mesh[], platform :Cplatform) => 
     {
         for (const cubes of this.mesh) 
@@ -181,7 +188,6 @@ abstract class Afigure //implements Ifigure
             this.leanForward(passiveCubes, platform)
         }
     }
-
     leanRight = (passiveCubes: THREE.Mesh[], platform :Cplatform) => 
     {
         for (const cubes of this.mesh) 
@@ -197,7 +203,6 @@ abstract class Afigure //implements Ifigure
             this.leanLeft(passiveCubes, platform)
         } 
     }
-
     leanLeft = (passiveCubes: THREE.Mesh[], platform :Cplatform) => 
     {
         for (const cubes of this.mesh) 
@@ -214,7 +219,6 @@ abstract class Afigure //implements Ifigure
             this.leanRight(passiveCubes, platform)
         }
     }
-
     turnLeft = (passiveCubes: THREE.Mesh[], platform :Cplatform) => 
     {
         for (const cubes of this.mesh) 
@@ -230,7 +234,6 @@ abstract class Afigure //implements Ifigure
             this.turnRight(passiveCubes, platform)
         } 
     }
-
     turnRight = (passiveCubes: THREE.Mesh[], platform :Cplatform) => 
     {
         for (const cubes of this.mesh) 
