@@ -40,71 +40,83 @@ const ternCube2 = (parentCrdnt1 :number, parentCrdnt2 :number, childCrdnt1 :numb
 //     //const newChildX = childX - ((parentZ - childZ) - (parentX - childX));
 // }
 
-document.onkeydown = event => {
+document.onkeydown = event => 
+{
+    const X = camera.position.x -1000
+    const Z = camera.position.z -1000
 
-    const X = camera.position.x
-    const Z = camera.position.z
+    /// Conditions for determining the position of the camera relative to the initial position
+    /// the initial position is considered to be the "front" position
+    /// the "back" position is considered to be the position in which the camera is behind the initial position etc.
 
-    ///Conditions for determining the position of the camera relative to the initial position
-    ///the initial position is considered to be the "front" position
-    ///the "back" position is considered to be the position in which the camera is behind the initial position etc.
-
-    const back = (Z < 1000 && Z > Math.abs(X))
-    const right = (X > 1000 && X > Math.abs(Z))
-    const left = (X < 1000 && X > Math.abs(Z))
-    //const front = (Z > 1000 && Z > Math.abs(X) )
+    const back = (Z < 0 && Z * -1 > Math.abs(X))
+    const right = (X > 0 && X > Math.abs(Z))
+    const left = (X < 0 && X * -1 > Math.abs(Z))
+    //const front = (Z > 0 && Z > Math.abs(X) )
 
     const checkEk = (directionKeys: string[]) => directionKeys.includes(event.key);
-
     if (checkEk(['ArrowUp',])) 
     {
-        // back?  activeFigureNow.moveBack(usedCubes) : 
-        // right? activeFigureNow.moveLeft(usedCubes) : 
-        // left?  activeFigureNow.moveRight(usedCubes) : 
+        back?  activeFigure.moveBack(passiveCubes) : 
+        right? activeFigure.moveLeft(passiveCubes) : 
+        left?  activeFigure.moveRight(passiveCubes) : 
 
         activeFigure.moveFront(passiveCubes)
     }
     else if (checkEk(['ArrowDown',])) 
     {
-        // back?  activeFigureNow.moveFront(usedCubes) : 
-        // right? activeFigureNow.moveRight(usedCubes) : 
-        // left?  activeFigureNow.moveLeft(usedCubes) :
-
+        back?  activeFigure.moveFront(passiveCubes) : 
+        right? activeFigure.moveRight(passiveCubes) : 
+        left?  activeFigure.moveLeft(passiveCubes) :
 
         activeFigure.moveBack(passiveCubes)
     }
     else if (checkEk(['ArrowRight',]))
     {
-        // back?  activeFigureNow.moveLeft(usedCubes) : 
-        // right? activeFigureNow.moveFront(usedCubes) : 
-        // left?  activeFigureNow.moveBack(usedCubes) :
+        back?  activeFigure.moveLeft(passiveCubes) : 
+        right? activeFigure.moveFront(passiveCubes) : 
+        left?  activeFigure.moveBack(passiveCubes) :
 
         activeFigure.moveRight(passiveCubes)
     }
-
     else if (checkEk(['ArrowLeft',]))
     {
-        // back? activeFigureNow.moveRight(usedCubes) : 
-        // right? activeFigureNow.moveBack(usedCubes) : 
-        // left? activeFigureNow.moveFront(usedCubes) :
+        back? activeFigure.moveRight(passiveCubes) : 
+        right? activeFigure.moveBack(passiveCubes) : 
+        left? activeFigure.moveFront(passiveCubes) :
 
         activeFigure.moveLeft(passiveCubes)
     }
-
     if (checkEk(['W', 'w', 'ц', 'Ц', ])) 
     {
+        back? activeFigure.leanBack(passiveCubes, platform) : 
+        right? activeFigure.leanLeft(passiveCubes, platform)  : 
+        left? activeFigure.leanRight(passiveCubes, platform)  :
+
         activeFigure.leanForward(passiveCubes, platform)
     }
     else if (checkEk(['S', 's', 'ы', 'Ы', ])) 
     {
+        back? activeFigure.leanForward(passiveCubes, platform) : 
+        right? activeFigure.leanRight(passiveCubes, platform)  : 
+        left? activeFigure.leanLeft(passiveCubes, platform)  :
+
         activeFigure.leanBack(passiveCubes, platform)
     }
-    else if (checkEk(['A', 'a', 'ф', 'Ф', ])) 
+    else if (checkEk(['A', 'a', 'ф', 'Ф', ]))
     {
+        back? activeFigure.leanBack(passiveCubes, platform) : 
+        right? activeFigure.leanLeft(passiveCubes, platform)  : 
+        left? activeFigure.leanForward(passiveCubes, platform)  :
+
         activeFigure.leanLeft(passiveCubes, platform)
     }
-    else if (checkEk(['D', 'd', 'в', 'В', ])) 
+    else if (checkEk(['D', 'd', 'в', 'В', ]))
     { 
+        back? activeFigure.leanBack(passiveCubes, platform) : 
+        right? activeFigure.leanLeft(passiveCubes, platform) : 
+        left? activeFigure.leanRight(passiveCubes, platform) :
+
         activeFigure.leanRight(passiveCubes, platform)
     }
     else if (checkEk(['Q', 'q', 'й', 'Й']))
@@ -115,8 +127,6 @@ document.onkeydown = event => {
     {
         activeFigure.turnRight(passiveCubes, platform)
     }
-
-
     if (checkEk([' ',]))
     {
         if(
@@ -126,7 +136,7 @@ document.onkeydown = event => {
         {
             activeCubes.forEach(cube => cube.position.y -= 100);
         }
-    } //activeFigureNow.moveDown(usedCubes, platform);
+    }
 }
 
 const detectMeshCollision = (xyz :string, activeCubes :THREE.Mesh[], passiveCubes :THREE.Mesh[]): boolean =>
