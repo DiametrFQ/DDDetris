@@ -1,4 +1,5 @@
-import './style.css';
+//import './style.css';
+import './style.scss';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import Cplatform from './figures/Cplatform';
@@ -15,6 +16,27 @@ const activeCubes: THREE.Mesh[] = []
 const checkFull :THREE.Mesh[][] = [[],[],[],[],[],[],[],[],[],[]]
 let activeFigure: Afigure
 let timer = 1000
+
+document.querySelector<HTMLElement>('#moveFront').onclick = () => activeFigure.moveFront(passiveCubes)
+document.querySelector<HTMLElement>('#moveBack').onclick = () => activeFigure.moveBack(passiveCubes)
+document.querySelector<HTMLElement>('#moveRight').onclick = () => activeFigure.moveRight(passiveCubes)
+document.querySelector<HTMLElement>('#moveLeft').onclick = () => activeFigure.moveLeft(passiveCubes)
+document.querySelector<HTMLElement>('#moveDown').onclick = () => {
+    if(
+        !detectMeshCollision("y", activeCubes, [platform.Mesh]) && 
+        !detectMeshCollision("y", activeCubes, passiveCubes)
+    )
+    {
+        activeCubes.forEach(cube => cube.position.y -= 100);
+    }
+}
+document.querySelector<HTMLElement>('#leanBack').onclick = () => activeFigure.leanForward(passiveCubes, platform)
+document.querySelector<HTMLElement>('#leanForward').onclick = () => activeFigure.leanBack(passiveCubes, platform)
+document.querySelector<HTMLElement>('#leanLeft').onclick = () => activeFigure.leanLeft(passiveCubes, platform)
+document.querySelector<HTMLElement>('#leanRight').onclick = () => activeFigure.leanRight(passiveCubes, platform)
+document.querySelector<HTMLElement>('#turnLeft').onclick = () => activeFigure.turnLeft(passiveCubes, platform)
+document.querySelector<HTMLElement>('#turnRight').onclick = () => activeFigure.turnRight(passiveCubes, platform)
+
 
 document.onkeydown = event => 
 {

@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@mixin move($sideMove, $move, $bottom, $color) {
+    position: fixed;
+    z-index: 100;
+    background: $color;
+    height: 30px;
+    width: 30px;
+    #{$sideMove}: $move;
+    bottom: $bottom;
+}
+
+#moveRight{
+    @include move(right, 10px, 90px, #a50000);
+}
+#moveFront{
+    @include move(right, 40px, 120px, #a50000);
+}
+#moveLeft{
+    @include move(right, 70px, 90px, #a50000);
+}
+#moveBack{
+    @include move(right, 40px, 60px, #a50000);
+}
+#moveDown{
+    @include move(right, 40px, 90px, rgb(255, 145, 0));
+}
+
+#turnLeft{
+    @include move(left, 40px, 100px, #3c00ff );
+}
+#turnRight{
+    @include move(left, 100px, 100px, #3c00ff);
+}
+
+#leanLeft{
+    @include move(left, 40px, 40px, #a50000);
+}
+#leanRight{
+    @include move(left, 100px, 40px, #a50000);
+}
+
+#leanForward{
+    @include move(left, 70px, 10px, #094316);
+}
+#leanBack{
+    @include move(left, 70px, 130px, #094316);
+}

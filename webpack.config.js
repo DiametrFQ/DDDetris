@@ -2,6 +2,7 @@
 
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+//const scssloader = require("s")
 
 const isProduction = process.env.NODE_ENV == "production";
 
@@ -39,9 +40,9 @@ const config = {
         exclude: ["/node_modules/"],
       },
       {
-        test: /\.css$/i,
+        test: /\.scss$/i,
         include: path.resolve(__dirname, 'src'),
-        use: ['style-loader', 'css-loader', 'postcss-loader'],
+        use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
